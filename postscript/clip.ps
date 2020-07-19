@@ -1,0 +1,62 @@
+% Define a procedure for making a clip path
+
+/makeClipPath { %Does not use any argument on the stack.
+    newpath
+    0 0 moveto
+    144 0 rlineto
+    -72 200 rlineto
+    closepath % leaves the constructed path on top of the stack.
+} def
+
+/drawVLines {  %Draws vertical lines. 
+    0 10 150 % prepare looop parameters (START, INCREMENT, END)
+    { % prepare Loop body
+        0 moveto  % take xpos from loop parameters, ypos=0 and move
+        0 200 rlineto % add a vertical line to the path.
+    } for
+    % the path has multiple vertica lines.
+    % stroke them.
+    stroke
+} def
+
+/drawHLines{ % draw horizontal lines
+    0 10 200 % prepare loop parameters
+    {
+        0 exch moveto % xpos = 0, take ypos from loop counter
+        150 0 rlineto
+    } for
+    stroke
+} def
+
+% main body
+/drawRays {
+    0 1.5 180
+    {
+      gsave rotate
+      0 0 moveto  200 0 lineto
+      stroke 
+      grestore    
+    } for
+} def
+
+/makeTextPath { % expects a string STR on the stack.
+        % makes a path from STR outline and sets the clip region to it.
+        %/Times-Roman findfont 20 scalefont setfont
+        newpath
+        0 0 moveto
+        (CLIP IT)
+        true charpath clip
+} def
+
+
+% make a clip path
+/Times-Roman findfont 50 scalefont setfont
+0 0 translate
+makeClipPath clip % make a clip path and set clip region
+drawVLines        % draw vertical lines
+drawHLines        % draw horizontal lines
+200 100 translate
+initclip          % remove all prevous clipping effects
+makeTextPath
+-50 -50 translate
+drawRays

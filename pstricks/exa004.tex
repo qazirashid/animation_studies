@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{pst-node}
+\makeatletter
+\newtoks\@tabtoks
+\newcommand\addtabtoks[1]{\@tabtoks\expandafter{\the\@tabtoks#1}}
+\newcommand*\resettabtoks{\@tabtoks{}}
+\newcommand*\printtabtoks{\the\@tabtoks}
+\newlength\boxwidth
+\def\entry#1{\makebox[\boxwidth]{%
+  \rule[-0.4\boxwidth]{0pt}{\boxwidth}{%
+    \if$#1$\else$\hat{#1}$\fi}}}
+\def\tabline#1{\expandafter\@tabline#1\@nil}
+\def\@tabline#1,#2,#3,#4,#5;#6\@nil{%
+  \addtabtoks{\rnode{1,#6}{\entry{#1}} &
+  \rnode{2,#6}{\entry{#2}} & \rnode{3,#6}{\entry{#3}} &
+  \rnode{4,#6}{\entry{#4}} & \rnode{5,#6}{\entry{#5}}\\\hline}}
+\makeatother
+\pagestyle{empty}
+\begin{document}
+
+\resettabtoks
+\tabline{,0,1,2,3;1}
+\tabline{0,0,1,2,3;2} 
+\tabline{1,1,2,3,0;3} 
+\tabline{2,2,3,0,1;4} 
+\tabline{3,3,0,1,2;5} 
+
+\setlength\boxwidth{1cm}
+\tabcolsep=0pt
+\begin{tabular}{|*5{c|}}\hline
+\printtabtoks
+\end{tabular}
+\nccurve[arrowscale=2,linecolor=blue]{->}{1,1}{3,5}\naput*{+}
+\nccurve[arrowscale=2,linecolor=red,angleA=180]{->}{5,1}{2,4}\nbput{*}
+
+\end{document}

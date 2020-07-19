@@ -1,0 +1,543 @@
+\usemodule[tikz]
+\startMPinclusions
+    input boxes;
+\stopMPinclusions
+\starttext
+\startMPpage
+    u=5;
+    z0=(0,0); z1=(1cm*u,0cm); z2=(1cm*u,1cm*u); z3=(0cm,1cm*u);
+    pair q[];
+    path p[]; %Declare an array of paths indexed p0, p1, p2, ...
+    %Paths are constructed by joing points through straight lines or curves.
+    %When points are joined using curves, there are many options to shape the
+    %curve. curve direction can be set using  'tension' and 'curl
+    path curve;
+    curve = z0..z1{up}..tension 1.3..z2{dir 135}..{curl 1}z3;
+    draw curve withcolor blue;
+    p0=z0--z1--z2--z3--cycle;
+    q0=(z0+z1+z2+z3)/4;
+    %Use fourd points to draw a rectangle
+    draw p0  scaled 2 shifted (-.5cm*u, -.5cm*u);
+    draw p0;
+    
+    %Construct a curve passint throught four points. The curve does not 
+    % have any sharp corners and curvature changes very slowly.
+    
+    p1=z0..z1..z2..z3..cycle;
+    %draw p1 withcolor red;
+    %draw p1 scaled .5 withcolor red;
+    
+    p2= z0--z1..z2..z3--cycle;
+    %draw p2 withcolor blue;
+    %for deg=5 step 5 until 355:
+    %draw p0 rotatedaround (q0,deg);
+    %endfor
+    
+    z12=.5[z1,z2];
+    % objective is to make a knot.
+    p3= z0{right}..{down}z12..{left}z3;
+
+    draw p3 withcolor green;
+    dotlabels.rt(0,1,2,3);
+    picture pic; pic:=currentpicture;
+
+    %MetaPost Paths.
+    % paths should be closed with cycle.
+    % two paths A and B, such that last point of A=first point of B can be 
+    % joined together with operator '&'
+    % Two paths A and B, who have at least two intersection poins and make a 
+    % closed path between the intersection points can be joined jusingi 
+    % 'buildcycle'
+   %fill p0 withcolor green;
+   p30:=buildcycle(p3 cutafter z12, p0 cutafter z2 );
+   fill p30 withcolor red; 
+   %p31:=buildcycle(p3 cutbefore z12, p0);
+   %fill p31 withcolor cyan; 
+   %SUBPATHS
+   % Subpaths of paths can be obtained by using 
+   % 'subpath(pointnumberA, pointnumberB) of path'
+   % where pointnumbers can be fractional numbers.
+   pickup pencircle scaled 3pt;
+   draw (subpath(0.2,1.5) of p3) withcolor magenta;
+   % Subpaths can also be obtained by using 'cutbefore' and 'cutafter'
+   % ' <path> cutafter <point on path>' will produce a subpath starting from 
+   % initial point to the specified point.
+   % Note that <point on path> can be an expression that results in a pair. 
+   % The expression can be very complex. 
+   % e.g.  (z0..z1..cycle) cutafter (directionpoint up of (z0..z1..cycle))
+   %
+
+\stopMPpage
+\startMPpage
+    draw p0  scaled 2 shifted (-.5cm*u, -.5cm*u);
+    draw p3 cutafter (directionpoint left of p3) withcolor red;
+    % points on the path can be specified as time values on the path 
+    % diretion of path.
+    % point <scaler_value> of <path>    e.g point 2 of p0
+    % directionpoint <pair> of <path>   e.g directionpoint (0.5,0.2) of p0
+    % the 'dir(<scaler_value>)' can be used to obtained a <pair> (unit vector)
+    % that is 
+    % at a direction of <scaler_values> deg angle from the origin. 
+    % The reverse of 'dir' is 'angle' such that 'angle <pair>' gives a <scaler>
+    % which is the deg angle of the <pair> at the origin.
+
+\stopMPpage
+\startMPpage
+    %draw p0  scaled 2 shifted (-.5cm*u, -.5cm*u);
+    % the <picture> types can be used to store drwan paths.
+    % special variable 'currentpicture' contains all paths that are currently
+    % drawn. 
+    % Pictures can be transformed like paths and they can be drawn. 
+    draw (0cm,0cm)--(1cm,1cm);
+    draw (1cm,0cm)--(0cm,1cm);
+    pic := currentpicture;
+    draw pic shifted (3cm,0cm); draw pic shifted (6cm,0cm);
+
+\stopMPpage
+
+\startMPpage
+    
+    %draw p0  scaled 2 shifted (-.5cm*u, -.5cm*u);
+    numeric n; n:=2;
+    draw (if n<10: p3 else: p1 fi ) withcolor red;
+    if n>12: draw (0,0)--(1cm,0cm); else: draw (0,0)--(0cm,1cm); fi  
+    
+\stopMPpage
+
+\startMPpage
+    %challenge is to draw a horizontal spring
+    % Start by drawing just one loop of the spring. 
+    % One spring loop has 3 points. z10, z11, z12. Where
+% z11 indicates the width of the spring. 
+% at z10 spring is going right. it curves downward then goes left at z11,
+% then curves upwards and goes towards z12, at reaching z12, it is going right
+% again. 
+    
+    %draw p0  scaled 2 shifted (-.5cm*u, -.5cm*u);
+    numeric n; n:=2;
+    path springloop;
+    numeric loopwidth, loopheight;
+    loopwidth := 4pt; loopheight=5pt;
+    lmid=.5loopwidth;hten=.2loopheight;
+    springloop := (0pt,0pt){right}..{dir(60)}(lmid,hten)..
+        {dir(160)}(loopwidth/2,loopheight){dir(200)}..{dir(-60)}(lmid,hten)..
+        {right}(loopwidth,0pt);
+    
+    for i=0pt step loopwidth until 10loopwidth:
+        draw springloop shifted (i,0);
+    endfor;
+    
+\stopMPpage
+
+\startMPpage
+    for i=1,3,8:
+        label(decimal i,(i,0));
+        
+    endfor;
+    %if it is required that the loop variable be changed in the loop body then
+    %a 'forsuffixes' loop needs to be used.
+    forsuffixes i=p0,p1,p2:
+        i := i shifted (1cm,0cm);
+    endfor;
+    %Loops can also be built using 'forever', where a loop terminating 
+    %condition is placed inside the loop body using 'exitif <condition>'.
+    %
+\stopMPpage
+\startMPcode
+    % There are several types of macros.
+% % A primary macro is used to define new operators.
+    primarydef p doublescaled s =
+         p xscaled (s/2) yscaled (s*2)
+    enddef;
+    draw p3 doublescaled 2 withcolor red;
+    % When primary macro expands, this command becomes
+    % draw p3 xscaled 1 ysclaed 4 withcolor red;
+    
+    %macros can also be defined in function like syntax and can take parameters
+    def scaleItSo (expr p, s) =
+        p xscaled (s/2) yscaled (2s)
+    enddef;
+    draw (scaleItSo(p3,2)) shifted (1cm,1cm) withcolor green;
+    % the above statement did not work. need to check why.
+    % The statement was wrong. it specified path name as 'p' and there was no
+    % path named 'p'. now changed to 'p3' and working.
+    
+    %macros can also return values. This has been done using 'vardef' type
+    %macro in metafun but not sure whether that is necessary. 
+    vardef morescaled(expr p, s) = 
+        numeric hidden, hidd; hidd=hidden*2;
+        %In a 'vardef' type macro, everything except the last 
+        %statement is hidden. This type of macro is very much like a function 
+        %call. It is not expanded like a 'def' or 'primarydef' type macros, 
+        %but it is executed like a function and the value of last statement is
+        %returned.  
+        p xscaled (s/2) yscaled (2*s) shifted (1cm, -1cm)
+    enddef;
+    draw morescaled(p3,2) withcolor blue;
+    % vardef type macros can also be used to assign values
+    path mypath; mypath=morescaled(p3,1.5);
+    draw mypath;
+    % macro argument can have three types
+    % expr: Something that can be assigned to a variable. 
+    % text: arbitrary metapost code that ends with a semicolon.
+    % suffix: a variable bound to another variable.
+    % An expr is passed by value. A copy is used in the macro body and original
+    % is not affected. 
+    % Any variable passed as suffix will be passed like a reference and if it
+    % changes in the macro body, the original will also change.
+    %
+    %Local variables in macro body should be placed in a gourp within the macro
+    %so that when during expansion, the global variables are saved and when
+    %macro end, the global variables are restored. 
+    %If grouping is not used then any variables used inside macro body will 
+    %overwrite the global variables.
+    %
+    vardef demoGroup(expr p, s) =
+       begingroup; save r; numeric r; r:=82;
+          p xscaled s yscaled 2s
+      endgroup
+    enddef; 
+    % vardef macros are grouped by default and user does not need to start and 
+    % end the group. However, variables that are supposed to be
+    % local must be 'saved' before they are used locally.
+    %
+\stopMPcode
+\startMPcode
+    %pens can be specified when drawing a path using 'withpen'. 
+    % Metapost also uses concept of 'currentpen', which can be picked up
+    % using 'pickup'. 
+%User can also define their own pens using 'makepen'.
+    
+    draw p3 withpen (pencircle xscaled .1 yscaled 4 rotated 30);
+    pickup pencircle xscaled 4 yscaled .1 rotated 30;
+    draw p3 shifted (1cm,0cm) withcolor red;
+    pen qalam; qalam := makepen((0,0)--(1pt,0)--(2pt,5pt)--(1pt,5pt)--cycle);
+    draw p3 withpen qalam shifted (2cm,0) withcolor green;
+
+    % example above show that user can use pre-defined pens, and make pens 
+    % with arbitrary shapes to achieve any desired artistic affects.
+
+    %pens can be converted to paths using 'makepath' macro. 
+    
+    draw p3 shifted (3cm,0cm) dashed (evenly scaled 3mm)  withcolor red;
+    p5 := (0cm,-3cm)..(2cm,-3cm)..cycle;
+    %pickup pencircle;
+    draw p5 dashed (evenly scaled 4mm) withcolor blue;
+    %draw a box around the 'current picture', just for fun.
+    boxit.a(currentpicture);
+    drawboxed(a);
+\stopMPcode
+\startMPcode
+    pickup pencircle scaled 10pt;
+    s := 6cm;
+    %Challenge is to draw a wall clock showing realistic looking time.
+
+    %Step 1: Draw outer body. 
+    path body;
+    body := unitcircle  scaled s shifted (-s/2,-s/2);
+    draw body;
+    fill body withcolor 0.1[white,red];
+    
+    % draw center point
+    pair zo;
+    zo := (0,0);
+
+    pickup pencircle scaled .5pt; linecap:=butt;
+    %draw minute tickmarks
+    for ang=0 step (360/60) until 360:
+        draw ((s/2-.5cm)*dir(ang))--((s/2-.2cm)*dir(ang)) withcolor .4[black,white]; 
+    endfor; 
+    %draw hour tickmarks
+    pickup pencircle scaled 2pt; linecap:=butt;
+    for ang=0 step (360/12) until 360:
+        draw ((s/2-.5cm)*dir(ang))--((s/2-.2cm)*dir(ang)); 
+    endfor;
+    %draw thick main hour marks at 12, 3, 6 and 9
+    pickup pencircle scaled 3pt; linecap:=butt;
+    for ang=0,90,180,270:
+        draw ((s/2-.6cm)*dir(ang))--((s/2-.2cm)*dir(ang)); 
+    endfor;
+
+    numeric lang; lang:=1;
+   
+    %draw digits
+    for ang=60 step -30 until -270:
+        label(decimal lang,(s/2-.8cm)*dir(ang));
+        lang := lang +1;
+    endfor; 
+    % draw pi at 3.14
+    piangle=-3.14*360/12+90;
+    hourhand :=3; minutehand :=33; secondhand := 47;
+    path hpath, mpath, spath; 
+    hangle := -hourhand*(360/12) + 90 - .5minutehand;
+    mangle := -minutehand*(360/60) + 90;
+    secangle := -secondhand*(360/60) + 90;
+    linecap:=rounded; 
+    hpath := -.1cm*dir(hangle) -- (s/2-s/4.5)*dir(hangle);
+    draw hpath withpen pencircle scaled 4pt; 
+    mpath := -.1cm*dir(mangle) -- (s/2-s/5)*dir(mangle);
+    draw mpath withcolor .6[black,white] withpen pencircle scaled 2 pt;
+    spath := -.1cm*dir(secangle) -- (s/2-s/6)*dir(secangle);
+    draw spath withcolor .8[black,white] withpen pencircle scaled 1pt withcolor
+        .6red;
+    fill unitcircle scaled .5cm shifted (-.25cm,-.25cm);
+    label.top("\TeX",(0,0.6cm));
+    label.top("$e^{\iota\pi}=-1$",(0,0.2cm));
+    %drawpoints body withcolor green;
+    
+\stopMPcode
+\startMPcode
+    %Each path or picture type has a bounding box and it can be obtained using
+%metapost macros 'llcorner <path or picture>' 'lrcorner, urcorner, ulcorner'.
+%also 'center p' gives the center of p ( where p is a path or picture). 
+%First draw the path
+    draw p3 withpen qalam withcolor red;
+   % Then draw its bounding box
+    draw llcorner p3 -- lrcorner p3 -- urcorner p3 -- ulcorner p3 -- cycle;
+    draw bbox p3 withcolor .6red;
+   % points on path can be accessed using three main ways
+    %  point <point_number> of <path> (point 3 of p)
+    %  point <time> along <path>          (point 2.13 along p)
+    %  point <length> on <path>     (point 1cm on p)
+    pickup pencircle scaled 5pt; 
+    for cnt=1 step 1 until 10:
+        draw (point (1cm*cnt) on p3) withcolor green;
+    endfor; 
+    label(decimal arclength p3, point 0cm on p3);
+    %label((len of p3), point 1cm on p3);
+\stopMPcode
+When you draw paths, texts or pictures, they are added to the {\bf 
+current picture}.You can manipulate this {\bf current picture}
+\startitemize
+    \item current picture can be transformed using any transform.
+     p3 has been slanted .5 in the below picture using.\par
+     {\tt draw p3; currentpicture := currentpicture slanted .5;\par
+       pushcurrentpicture;
+       \%some other draw commands;
+       popcurrentpictre; \par }
+    
+      when popped back, the picture will be overlaid on anything that had 
+drawn after push.
+\stopitemize
+\startMPcode
+ %input mp-tool;
+ draw p3 scaled 0.2;
+ currentpicture :=currentpicture slanted 0.5;
+ pushcurrentpicture;
+ draw fullcircle scaled 5mm withpen pencircle withcolor .6yellow;
+ currentpicture := currentpicture slanted -.5;
+ popcurrentpicture;
+ bboxmargin:=0pt;
+ draw bbox currentpicture withcolor .625red;
+ %string something; 
+ something := \ctxlua{tex.print("3")};  
+ string mystr;
+ mystr := "Hello";
+\stopMPcode
+
+Can we place Metapost graphics inline with Text.
+%\pagebreak
+
+ Here is a 
+%\startMPgraphic
+ %   draw fullcircle scaled 10pt;
+%\stopMPgraphic
+\tikz{\draw (0,0) circle [radius=10pt]} circle;
+
+\section{Some Lua Tests}
+\ctxlua{a=1.5; b=1.8; c= a*b; tex.print(c);}\par
+\ctxlua{tex.print("$\string\\sqrt{2} = ".. math.sqrt(2) .."$")}
+\vfill \pagebreak
+\section{Boxes library for Metapost}
+
+The main idea of 'boxes.mp' package for metapost is that one should 
+ declare a box as  'boxit.<suffix>(<picture expression>)
+ This creates pair variables <suffix>.c,<suffix>.n, <suffix.e>, ...
+ These generated pair variables can then be usedfor positioning the picture
+ before draw it with a separate command, such as 'drawboxed(<suffix list>)
+ The argument to 'drawboxed' should be a comma separated lsit of box names,
+ where box name is a <suffix> with which 'boxit' has been called.
+
+ for the command 'boxit.bb(pic)' the box name = 'bb' and contents of box='pic'.
+ 'bb.c' is the position where the centre of 'pic' is to be placed.
+ 'bb.sw, bb.se, bb.ne, and bb.nw' are corners (south west, south east, north 
+ west, and north east) of the rectangular path that will surround the 'pic'.
+ variables 'bb.dx' and 'bb.dy' give the spacing between the 
+
+\startMPcode 
+    boxit.a(btex TESTING BOXES etex);
+    a.c = (0,0);
+    drawboxed(a);
+    pickup pencircle scaled 4pt;
+    drawdot(a.ne) withcolor red; drawdot(a.sw) withcolor red;
+    drawdot (a.c) withcolor blue;
+    drawdot(.5[a.ne,a.se]) withcolor green;
+\stopMPcode
+
+When a boxit macro is called with box name b, i gives linear equations that 
+force b.sw, b.se, b.ne, and b.nw to be the corners of the rectangle aligned 
+on the $x$ and $y$ axis with the box contents centered inside.
+The values of $b.c, b.dx$ and $b.dy$ are left unspecified, so that the user
+could give equations for positioning the boxes. If no such values are given
+by the user, default values are applied. The default values of $dx$ and $dy$ 
+are controlled by $defaultx$ and $defaulty$.
+
+If $b$ represents a boxname, {\bf drawboxed($b$)} draws the rectangular boundary
+of box $b$. The bounding rectangle can be accessed as {\bf bpath $b$}.
+This is useful for cutting paths that enter the box. 
+For example, if $a$ and $b$ are box names and $p$ is a path from $a.c$ to $b.c$,
+then 
+\vskip 10pt
+{\tt drawarrow p cutbefore bpath a cutafter bpath b}
+\vskip 10pt
+will draw an arrow from edge of box $a$ to the edge of box $b$.
+
+
+\startMPcode
+    %boxjoin(a.se=b.sw; a.ne=b.nw);
+    boxit.a("Box A"); boxit.b("Box B");
+    %a.se=b.nw;
+    a.c=(0,0);
+    %a.ne - a.se=(0,2cm);
+    b.c=(3cm,0);
+    a.ne + (1cm,0) = b.nw;
+    
+    p0 := a.c{dir(45)} .. b.c{dir(-45)};
+    drawunboxed(a); drawboxed(b); %draw p0;
+    drawarrow p0 cutbefore bpath a cutafter bpath b;
+    drawarrow a.se{dir(-45)}..b.sw{dir(45)};
+    %pic (a);
+\stopMPcode
+
+{\bf boxjoin(<equation>)} macro can be used to control the relationship between
+two boxes. For example, let $a$ and $b$ be two boxes then 
+{\bf boxjoin(a.se=b.sw; a.ne=b.nw)} will cause the boxes to have same height 
+and line up horizontally.
+
+\section{Dealing with Unknown points}
+Meta post can solve linear equations for unknown points (Pairs of numbers). 
+
+\startMPcode
+    z1=-z2;
+    % The statement z1=-z2 establishes a relationship between two points.
+    % Both points are unknown at this stage, but they are constraind.
+    z1+z2=(0,0); 
+    % This is a redundant equation, but it specifies the same relationship as
+    % the above statement and does not conflict with the previous relationship.
+    % Hence Metapost does not complain. This statemtent does not add any 
+    % information. Both points are still unknown.
+    % If we try to draw any path containing either z1 or z2, it will result
+    % in error and Metapost will complain that points are not known.
+    z1=(3cm,1cm);
+    %Now we have specified z1. Since z1 and z2 have a specific relation.
+    % This makes z2=(-3cm,-1cm). Now paths that had unknown z1 and z2 points
+    % are also known and can be added pictures/drawn/filled.
+    draw z1{left} .. {left}z2;
+    draw z1--z2;
+    
+    % new points can be defined in terms of previously known/unknown points
+    z3 = .4z1 + .6z2;
+    %here we define a new point that is defined in terms of two previuos point.
+    %points are two D vectors. Hence we are doing basic linear algebra.
+    draw z1{left}..{down}z3..{left}z2;
+    
+    % new points can also be defined as mediation between two points.
+    z4 = .5[z1,z2];
+    % Here z4 is the mid point of the stright line joining z1 and z2.
+    % Mediation is allowed with unknown numerics.
+    z5 = aa[z1,z2];
+    % z5 is somewhere (yet unknown) on the line joining z1 and z2. 
+    %z5 will be known only when all z1,z2 and aa become known. 
+
+    % special variable 'whatever' can be used to generate annoymous variable
+    % that are required in calculations, but are not otherwise used.
+    z6 = whatever[z1,z2];
+    % here z6 is also a point somewhere (yet unknown) on the line connecting 
+    % z1 and z2. However, unlike z5, no name was given to the variable.
+    % Metapost allows any linear equations describing unknow pairs. 
+    % They can be spcified anywhere. However, before such pair is used in  
+    % any operation, it must become known.
+    % Equations must be linear in the unknowns. unknown quantities cannot be
+    % multiplied.
+    show z5;
+    \stopMPcode
+    \startMPcode
+    picture labl[];
+    labl1 := thelabel("Testing",(0,0));
+    %thelabel is a macro that returns a <picture>
+    %we can manipulate the returned picture by applynig transforms to it.
+    % first draw is simply.
+    draw labl1;
+    % Then draw is scaled, shifted and colored
+    draw labl1 shifted (2cm,0) scaled 4 withcolor green;
+    % then draw it scaled, shifted, rotated and colored.
+    labl2 := labl1 rotated 45 scaled 4 shifted (2cm,0cm);
+    draw labl2 withcolor red;
+    path container;
+    container := ((llcorner labl2) --(lrcorner labl2){dir(60)}..
+    (urcorner labl2)--(ulcorner labl2) ..(llcorner labl2)..cycle);
+    pickup pencircle scaled 3pt;
+    linecap := butt;
+    draw container dashed dashpattern(on 6bp off 12bp on 6bp) withcolor .2red;
+
+\stopMPcode
+\section{Picture Variables}
+Metapost primitive {\bf addto} is used to add components to a <picture>.
+Higher level Plan macros like {\bf draw} write to the current picture.
+Current picture can be saved (push), then set to null, let a higher level macro write
+to it, and save it to another picure and restored the original picture by
+popping. 
+
+Another newer macro {\bf image} is introduced in Metapost version 0.6.
+It takes as input a sequence of arbitrary drawing operations and returns
+a <picture>, without affectig the currentpicture.
+
+pictures drawn using {\bf image} can be used in other {\bf image} definition 
+to build larger pictures.
+
+
+\startMPcode
+    picture wheel;
+    u :=1cm;
+    wheel := image(
+        draw fullcircle scaled 2u xscaled .8 rotated 30;
+        draw fullcircle scaled .15u xscaled .8 rotated 30;
+    );
+    draw wheel withcolor blue;
+\stopMPcode
+
+\section{Shaders}
+ At this point, it is not clear to me whether shaders are supported by metapost
+or they are being brought in using Context. 
+
+\startMPcode
+    fill fullsquare xyscaled (TextWidth, 1cm)
+        withshademethod "linear" 
+        withshadevector (1,0)
+        withshadecolors (.6red,0.6green);    
+    fill fullsquare xyscaled (1cm,3cm)
+        withshademethod "linear"
+        withshadevector (1,2)
+        withshadecolors (.5green, .9yellow);
+\stopMPcode
+
+\section{Outlines}
+\startMPcode
+    draw outlinetext.b("\bf Testing")
+           (withcolor .8white)
+           (withcolor .2white withpen pencircle scaled .3)
+           scaled 4 zscaled (1,.5);
+\stopMPcode
+
+\section{Including SVGs}
+\startMPcode
+    %draw lmt_svg [filename="tiger.svg", origin=true, ] ysized 2cm; 
+\stopMPcode
+
+
+\stoptext
+
+
+
+
+

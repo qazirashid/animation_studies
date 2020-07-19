@@ -1,0 +1,59 @@
+newpath
+    72 360 moveto
+    144 72 rlineto
+    144 432 moveto
+    0 -216 rlineto
+stroke
+newpath
+    270 360 moveto
+    0 72 rlineto
+    72 0 rlineto
+    0 -72 rlineto
+    -72 0 rlineto
+    closepath
+    4 setlinewidth
+stroke
+newpath
+    270 360 moveto
+    36 36 rmoveto
+    0 72 rlineto
+    72 0 rlineto
+    0 -72 rlineto
+    -72 0 rlineto
+    -36 -36 rlineto
+    0 72 rmoveto
+    36 36 rlineto
+    72 0 rmoveto
+    -36 -36 rlineto
+    0 -72 rmoveto
+    36 36 rlineto
+    4 setlinewidth
+    0.1 setgray
+stroke
+/ppi 72 def
+
+% --- Define a procedure named 'box'.
+/box
+    { 72 0 rlineto
+      0 72 rlineto
+      -72 0 rlineto
+      closepath} def
+% --- Procedure definition complete.
+newpath  252 72 moveto box fill
+newpath  252 72 moveto 36 36 rmoveto box 0.5 setgray fill
+newpath  252 72 moveto 72 72 rmoveto box 0.8 setgray fill
+
+/inch {72 mul} def   % conversion from inches to points
+/box2 {
+    newpath moveto 
+    1 inch 0 rlineto
+    0 1 inch rlineto
+    -1 inch 0 rlineto
+    closepath
+} def
+/fillbox {setgray fill} def
+.5 inch .5 inch box2 0 fillbox
+1 inch 1 inch box2 .5 fillbox
+1.5 inch 1.5 inch box2 .7 fillbox
+
+showpage

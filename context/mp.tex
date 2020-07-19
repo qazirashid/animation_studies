@@ -1,0 +1,45 @@
+
+
+\usemodule [tikz]
+\usetikzlibrary[arrows,decorations.pathmorphing, backgrounds, calc]
+\starttext
+This is test file to learn about the MetaPost and Tikz. 
+
+\startMPcode
+    u:=50; wi:=5; he:=3.5cm; heu := he*u; wiu:=wi*u; %declared numerics and assigned values. 
+    path p, q[];% delcared a path p and an array of paths q.
+    transform t; % declared a transform t
+    picture lab[]; % declared an array of pictures lab.
+    
+    z0=0.5(u,u);
+    t := identity scaled u shifted z0;
+    z1=(3.5,0) transformed t;
+    z2=(0,2.5) transformed t;
+    
+    p:=(.5,2) for i=2 upto 6: ..(.5i,1/(.5i)) endfor;
+    p:= p transformed t;
+    
+    q0 := ((1,-0.5)--(1,2.5)) transformed t;
+    q1 := ((2.8,-0.5)--(2.8,2.5)) transformed t;
+    q2 := (z0--z1);
+    q3 := buildcycle(q2,q1,p,q0);
+    %draw q0; draw q1; draw q2 withcolor blue;
+    fill q3 withcolor .95green;
+    draw p withcolor red;
+    lab0 := thelabel(
+        btex
+        $B$ 
+        etex,
+        (0.5,2) transformed t
+    );
+    draw lab0;
+    for j=5 step 5 until 360:
+        draw p rotatedaround((0.5,2)transformed t, j) withcolor red;
+    endfor;
+    pickup pencircle scaled 10pt;
+    drawdot origin;
+    %verbatimtex
+    %This is some verbatim tex. $ x = \frac{a}{b} $
+    %etex
+\stopMPcode
+\stoptext

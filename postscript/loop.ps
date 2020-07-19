@@ -1,0 +1,41 @@
+newpath
+/pagewidth { 8.5 72 mul } def
+/doCircle {
+    xpos 0 ypos setrgbcolor
+    xpos ypos radius 0 360 arc stroke
+} def
+% doCircle will draw a circle at (xpos,ypos) with a radius 'radius'
+% Note that 'xpos', 'ypos', and 'radius' have not been defined yet.
+% They are like global variables that procedure can use.
+
+/increase-x {
+    xpos radius add % calculate sum of xpos and radius, leave result on stack.
+    /xpos exch def % redefine xpos as what is on the stack
+} def
+% increase-x moves xpos to right by current value of radius
+% 
+/lineofcircles { % stack has radius and ypos
+    /ypos exch def % assign ypos=value that was on top of stack.
+    /radius exch def % assign next value on the stack to radius
+    %two values have been taken off the stack and assigned to variables
+    /xpos 0 def % set xpos=0
+    {
+        xpos % push xpos to stack.
+        pagewidth % push 'pagewidth' to stack.
+        le % check if 'xpos' < 'pagewidth'. result 'true' or 'false' is on
+        %top of the stack.
+        {doCircle increase-x} % draw a circle and increase x
+        {exit} % if xpos>pagewidth, then exit any loops
+        % push two procedures onto stack. The one executed depends on
+        % Wether stack contains a 'true' or 'false'
+        ifelse
+    } loop % the body inside {} will loop until 'exit' is executed.
+} def
+
+10 400 lineofcircles % draw a line of circles of radius=10, ypos=400
+30 400 lineofcircles
+60 400 lineofcircles
+
+90 rotate
+20 20 translate
+10 400 lineofcircles

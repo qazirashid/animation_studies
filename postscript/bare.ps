@@ -1,0 +1,37 @@
+%%
+/oshow { 
+    .5 0 0 setrgbcolor
+    true  charpath fill  
+} def
+/orshow { 
+    gsave 
+    -90 rotate 
+    .5 0 0 setrgbcolor
+    true  charpath fill  
+    grestore
+} def
+
+/circleOfText {
+    0 15 345 
+    { gsave 
+      rotate  
+      9 0 moveto  (OlphI) oshow 
+      %10 0 moveto (\363) orshow  
+      grestore
+    } for
+} def
+
+/spacing 110 def
+
+/Symbol findfont 20 scalefont setfont
+250 400 translate
+.5 setlinewidth
+circleOfText
+-1 spacing mul 0 translate
+circleOfText
+0 spacing translate
+circleOfText
+spacing 0 translate 
+circleOfText
+showpage
+

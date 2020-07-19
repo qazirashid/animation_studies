@@ -1,0 +1,33 @@
+
+\startMPinclusions
+    input boxes;
+\stopMPinclusions
+\starttext
+    \startMPcode
+    picture pc[];
+    draw (0,0) -- (1cm, 1cm);
+    pc0 := btex Testing  etex;
+    
+   boxit.a(pc0);
+   boxit.b(btex Node B etex);
+   a.ne = b.nw;
+   a.se = b.sw;
+   b.ne - b.nw = (6cm,0cm);
+   a.ne - a.se = (0cm,2cm);
+   a.c=(2cm,0);
+
+   drawboxed(a);
+   drawboxed(b);
+   path p[];
+   p0 := bpath a;
+   draw p0 shifted (-1*a.c) scaled 1.2 shifted (a.c) rotatedaround(a.c,45) withcolor red
+    \stopMPcode
+
+%\startMPcode{doublefun}
+   %draw lmt_followtext [ text ="Some experimental Text",
+    %    path =fullcircle scaled 4cm,
+     %   trace = true,
+      %  spread=true,
+    %] ysized 5cm;
+%\stopMPcode
+\stoptext

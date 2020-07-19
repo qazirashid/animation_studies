@@ -1,0 +1,30 @@
+\documentclass{beamer}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
+\usetheme{Frankfurt}
+\begin{document}
+	\pgfdeclarelayer{bg}
+	\pgfdeclarelayer{fg}
+	\pgfsetlayers{bg,main,fg}
+	\begin{frame}
+		\begin{figure}
+			\begin{tikzpicture}[->, scale=1.8, auto, swap]
+				\node (a) at (0,0) {$A$};
+				\node (b) at (0,1) {$B$};
+				\node (c) at (1,1) {$C$};
+				\node (d) at (1,0) {$D$};
+				\node (e) at (3,1) {$E$};
+				\path (a) edge node {} (b);
+				\path (b) edge node {} (c);
+				\path (c) edge node {} (d);
+				\path (d) edge node {} (e);
+				\begin{pgfonlayer}{bg}
+					\path<2-2> [draw, line width=5pt, -, red!40] (a.center) edge node {} (b.center);
+					\path<3-> [draw, line width=5pt, -, red!40] (b.center) edge node {} (c.center);
+					\draw <4-> [thick, rounded corners=8pt] (0,0) -- (0,2) -- (1,3.25) -- (2,2) -- (2,0) -- (0,2) -- (2,2) -- (0,0) -- (2,0);
+				\end{pgfonlayer}
+			\end{tikzpicture}
+		\end{figure}
+	\end{frame}
+\end{document}

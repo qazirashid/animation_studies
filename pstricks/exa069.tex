@@ -1,0 +1,41 @@
+\documentclass[pstricks]{standalone}
+\usepackage{pst-solides3d}
+
+\begin{document}
+	
+	\begin{pspicture}(-7,-4)(7,11)
+	\psset{viewpoint=35 20 30 rtp2xyz,Decran=160,lightsrc=viewpoint,solidmemory}
+	%\psSurface[opacity=0.6,strokeopacity=0.4,fillcolor=red!80,linecolor=black!20,
+	%           linewidth=0.4pt,algebraic,ngrid=0.2 0.2,
+	%           Zmin=0,Zmax=2,showAxes=false](-1,-1)(1,1){0.25*e^(-x^2-y^2)+1}
+	%\psSurface[opacity=0.6,strokeopacity=0.4,fillcolor=blue!80,linecolor=black!20,
+	%           linewidth=0.2pt,algebraic,ngrid=0.2 0.2,
+	%           Zmin=0,Zmax=2,showAxes=false](-1,-1)(1,1){0.25*e^(-x^2-y^2)}
+	\psSurface[opacity=0.6,strokeopacity=0.4,fillcolor=red!80,linecolor=black!20,
+	action=writesolid,file=S0,% name=P,action=none,
+	linewidth=0.2pt,algebraic,ngrid=0.2 0.2,axesboxed,
+	Zmin=0,Zmax=2,showAxes=false](-1,-1)(1,1){0.25*e^(-x^2-y^2)+0.5}
+	\psSolid[object=datfile,file=S0,name=Pi,numfaces=all,fontsize=3]
+	\codejps{Pi 33 solidcentreface /Center defpoint3d Center /zc33 exch def /yc33 exch 
+	def 
+		/xc33 exch def
+		Pi 33 solidnormaleface 0.8 mulv3d Center addv3d /zN33 exch def /yN33 exch def 
+		/xN33 exch def
+		Pi 99 solidcentreface /Center defpoint3d Center /zc99 exch def /yc99 exch def 
+		/xc99 exch def
+		Pi 99 solidnormaleface 0.5 mulv3d Center addv3d /zN99 exch def /yN99 exch def 
+		/xN99 exch def
+	}%
+	\psSolid[object=vecteur,
+	definition={[0.001 0.001]},
+	args=Pi 33 solidnormaleface 0.8 mulv3d,
+	linecolor=red](xc33,yc33,zc33)%
+	\psSolid[object=sphere,r=0.025,grid,fillcolor=red](xN33,yN33,zN33)
+	\psSolid[object=vecteur,
+	definition={[0.001 0.001]},
+	args=Pi 99 solidnormaleface 0.5 mulv3d,
+	linecolor=red](xc99,yc99,zc99)%
+	\psSolid[object=sphere,r=0.025,grid,fillcolor=red](xN99,yN99,zN99)
+	\end{pspicture}
+\end{document}
+

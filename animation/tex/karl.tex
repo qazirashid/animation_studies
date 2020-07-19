@@ -1,0 +1,59 @@
+\documentclass{beamer}
+\usepackage[size=a4]{beamerposter}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usetikzlibrary{shapes, intersections}
+%\usetheme{Frankfurt}
+\begin{document}
+	\pgfdeclarelayer{bg}
+	\pgfdeclarelayer{fg}
+	\pgfsetlayers{bg,main,fg}
+	\tikzset{my style/.style={very thin}}
+	\tikzset{grid style/.style={my style, color=#1!40},grid style/.default={blue}}
+	\begin{frame}
+		%\begin{figure}
+			\begin{tikzpicture}[ scale=3, auto, swap]
+				%colors
+				
+				\colorlet{anglecolor}{green!50!white}
+				\colorlet{sincolor}{red}
+				\colorlet{coscolor}{blue}
+				\colorlet{tancolor}{orange}
+				%graphic
+				%Add an invisible tikz path to set the draw area
+				
+				\begin{pgfonlayer}{bg}
+					
+					\path [draw,step=0.5cm, grid style={gray}]  (-1.4, -1.4) grid (1.4,1.4); 
+					\path [->, draw]  (-1.5,0) -- (1.5,0);
+					\draw [->] (0,-1.5) -- (0,1.5); 
+					\path  [name path=cir, draw, radius=1cm] (0,0) circle ;	
+					\path  [fill=green!20!white, draw=green!50!black, start angle=0, end angle=30, radius=3mm] (0,0) -- (3mm,0mm) arc -- cycle; 
+				
+					\path [name path=upward line] (1,0) -- (1,1);
+					\path [name path=sloped line] (0,0) -- (30:1.5cm);
+					\path [draw=red, thick] (30:1cm) -- node{$\color{red}\sin \alpha$} (30:1cm |- 0,0);
+					\path [draw=blue, thick] (0,0) -- node[fill=white] {$\color{blue}\cos \alpha$} (30:1cm |- 0,0);
+					\path [name intersections={of=upward line and sloped line, by=xint}, draw=gray!80, very thick] (1,0) -- (xint) -- (0,0) -- cycle;
+					\foreach \x/\xtext in {-1,-0.5/-\frac{1}{2},, 1}  \path [draw] (\x,1pt) -- (\x,-1pt) node [below, fill=white] {$\xtext$}; 
+						\foreach \x/\xtext in {-1,-0.5/-\frac{1}{2},0.5/\frac{1}{2}, 1}  \path [draw] (1pt,\x) -- (-1pt, \x) node [left, fill=white] {$\xtext$}; 
+					%\foreach \x in {-1.5,-1.25,...,1.5} \path [draw, fill=blue!30!white] (\x,0) circle (2pt) (0,\x) circle (2pt);
+					\path [draw] (xint) -- node [right=1pt] 
+						{$\displaystyle \color{orange}\tan \alpha = 
+							\frac{
+								{\color{blue}\sin \alpha}
+							}
+							{
+								\color{red}\cos \alpha
+							}
+						$} (1,0);
+					\path [draw=black, xshift=1.9cm] 
+						node [right, text width=6cm, rounded corners=8pt, fill=red!0!white] {
+							The {\color{anglecolor} angle $\alpha$ is $30^\circ$} 	in the example ($\pi/6$ in radians). The sine of $\alpha$  , which is the height of the red lien, is $$\sin \alpha = \frac{1}{2}$$.
+					};			
+								
+				\end{pgfonlayer}
+			\end{tikzpicture}
+		%\end{figure}
+	\end{frame}
+\end{document}

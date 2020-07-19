@@ -1,0 +1,32 @@
+newpath
+%the 'arc' operator adds a circular arc to the currentpath.
+% 'arc' requires 5 arguments on the stack.
+% (x,y) coordinates of the arc's center of curvature.
+% (r) the radius of the arc
+% (theta0, theta1) , the starting and ending angles of the arc.
+
+100 50 36 45 90 arc
+
+% Remember just adding things to currentpath will not draw them until path is
+% stroked or filled.
+stroke
+%Once the path has been stroked, currentpath is cleared. It is no longer 
+% available. If you want to keep it, use 'gsave' before 'stroke' and 'grestore'
+% after 'stroke'.
+
+
+%let's draw wifi like sign.
+
+
+200 200 1 20 70 arc
+stroke
+200 200 5 45 135 arc
+stroke
+200 200 9 45 135 arc
+stroke
+200 200 13 45 135 arc
+stroke
+200 200 17 45 135  arc
+stroke
+
+showpage

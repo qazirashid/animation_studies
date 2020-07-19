@@ -1,0 +1,29 @@
+newpath 
+%0 0 moveto
+%72 0 lineto
+%closepath
+%stroke
+/Times-Roman findfont
+15 scalefont
+setfont
+72 200 moveto
+(Typography
+using PostScript let's type a very long line and see what happens. Will 
+Postscript automatically break it or not. Let's see. 
+No it didn't break it. Well now we know something.) show
+
+200 400 moveto
+-90 rotate
+(Hello Rotated String) show
+45 rotate
+(Now going South East) show
+45 rotate
+200 700 moveto
+0 -100 rlineto
+100 0 rlineto
+0 100 rlineto
+closepath
+4 setlinewidth
+stroke
+
+showpage

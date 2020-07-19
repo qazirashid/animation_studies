@@ -1,0 +1,44 @@
+%%
+/LM 72 def
+/Times-Roman findfont 15 scalefont setfont
+/nstr 7 string def % calling 'instr' will create a 7 character long string.
+
+/newline {
+    currentpoint 16 sub 
+    % push (xpos, ypos) on to statck. calculate (xpos, ypos-16).
+    exch pop
+    % change stack from (xpos,ypos-16) to (ypos-16, xpos), then pop xpos.
+    LM % make stack (ypos-16, LM)
+    exch moveto % moveto (LM, ypos-16)     
+} def
+
+/factorial {  %stack: n => n!
+    %Address base case. Check if n>1. if True, call factorial again. else
+    % place a 1 on stack and return. 
+    dup 1 gt % duplicate the number and compare with 1. 
+    %stack now has (n,true/false)
+    %if result is true call factorial again. else pop n from stack. and place
+    % a 1 on top of stack. 
+    { 
+        dup 1 sub factorial
+       % if n >1, duplicate it on the stack. subtrack 1 and call
+        % factoraial. Factorial will leave (n-1)! on stack.
+       mul % n! = n*(n-1)! 
+    }
+    {pop 1}
+    ifelse
+} def
+/prt-n { %stack: n => _
+        nstr cvs show
+} def
+
+/prtFactorial { %stack: n
+    dup prt-n %print n
+    (! = ) show  % print ! =
+    factorial prt-n
+    newline
+ } def
+
+LM 600 moveto
+1 1 10 {prtFactorial} for
+showpage

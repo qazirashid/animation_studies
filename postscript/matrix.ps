@@ -1,0 +1,42 @@
+%%
+% experiments with transformation matrices. 
+% Main program
+/Times-Roman findfont 10 scalefont setfont
+0 780 moveto % moveto top of the page
+(.(0,780)) show % show string 'Top'
+560 780 moveto
+(.(560,780)) show
+
+/YMax 780 def
+/XMax 600 def
+/XC XMax 2 div def
+/YC YMax 2 div def
+
+XC YC translate % set the origin of user coordinates on the page center.
+/HArrow{ % places the path of a unit horizontal arrow on stack. 
+    newpath 0 0 moveto
+    72 0 rlineto
+    70 3 lineto
+    72 0 moveto
+    70 3 -1 mul lineto
+}def
+
+%72 72 scale
+0 5 moveto
+(.(0,0)) show
+72 5 moveto
+(.(0,1)) show
+[.3 .5 -.5 .3 0 0] concat
+%initmatrix
+HArrow stroke 
+newpath
+100 0 moveto
+0 72 rlineto
+72 0 rlineto
+0 -72 rlineto
+closepath
+0.8 0.1 0.1 setrgbcolor
+fill
+
+showpage
+

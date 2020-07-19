@@ -1,0 +1,59 @@
+% Each postscript font dictionary contains the encoding for its characters. 
+% Each character in the font is associated with an integer between 0 and 255.
+%
+% Many characters in a postscript font might not have any associated key on
+% the keyboard. Such characters are referred to by their codes.
+% Many fonts may not have a standard encoding and need to be assigned an 
+% encoding.
+%
+% To get characters outlines, use  
+% (STR) true charpath
+% This will add the outlines of all characters in STR to the current path.
+
+%Lets write a procedure that rotates and prints a strings in circlular shape.
+
+/oshow {  % stack: (STR)
+    % when the procedure is called, it expects an STR to have been placed 
+    % on the stack. 
+    true  % prepare to get outlines: stack : (STRT) true
+    charpath  % add outlnes to current path.
+    % Note charpath will remove 'true' and (STR) from stack.
+    % Underneath it will be the currentpath.
+    .5 0 0 setrgbcolor
+    %.5 setgray
+    stroke% stroke the path. This removes the path from stack.
+} def
+
+/circleOfText {
+    % set up a loop to roate user coordinates. Move to the origin of
+    % user coordinates. 
+    % Place STR on stack and call 'oshow' to print it.
+    15 15 360  % loop parameters: START INCREMENT STOP
+    {
+        %Body of the loop
+        gsave % save current graphic state.
+        rotate % Note that 'for' loop will place a number on 
+        %top of stack for each iteration. This number becomes the argument 
+        % to rotate and is removed from stack. 
+        % The user coordinates haveen been rotated.
+        0 0 moveto  % move to the origin.
+        (O -a\266) oshow  
+        % place a string on stack and call 'oshow'
+        grestore
+        % When done restore the graphics state     
+    } for
+} def
+
+% Main program
+/Helvetica-Italic findfont 20 scalefont setfont
+250 400 translate
+.5 setlinewidth
+circleOfText
+-100 0 translate
+circleOfText
+0 100 translate
+circleOfText
+100 0 translate 
+circleOfText
+showpage
+

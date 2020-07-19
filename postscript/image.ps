@@ -1,0 +1,31 @@
+%%
+% The image operator takes five arguments
+% scan length : number of samples per scan line.
+% scan lines  : number of scan lines in the image
+% bits per sample:  [1,2,4,8] number of bits per sample.
+% transform matrix: transform matrix to be applied to the image.
+% Procedure:  this procedure produces data strings required by the image.
+% This can be any postscript procedure that leaves a string on the stack.
+% The image operator takes this string and interprets its characters as sample
+% data. 
+% If one call to the procedure does not produce enough data to complete the 
+% whole image, the procedure will be called multiple times until enough data
+% is produces the completes the image.
+%
+%
+% Print an 8x8 binary image.
+%
+
+% As an experiment. Draw a circle as clip path
+%2 2 scale
+%newpath 200 200 200 0 360 arc clip
+
+%0 0 translate
+%72 72 scale      % image will be 1 sq inch.
+8 8 1 % scan length = 8, scanlines = 8, bits per sample=1
+[1 72 div 0 0  1 72 div 0 0] % transform matrix. Scale image to have 8 units.
+
+
+{<aa55>} % procedure that produces data 'c936' on stack for image operator
+image  % all 5 operators are on stack. Call image operator
+showpage

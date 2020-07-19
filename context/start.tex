@@ -1,0 +1,65 @@
+\usemodule [tikz]
+\usetikzlibrary[arrows,decorations.pathmorphing, backgrounds, positioning, fit, petri]
+\starttext
+\starttikzpicture [
+	node distance= 1.5cm, on grid, bend angle=45, auto,
+	every place/.style = {minimum size=6mm, thick, draw=blue!75, fill=blue!20},
+	every transition/.style={thick, draw=black!75, fill=black!20, minimum size=6mm}
+	]
+	\node [place] (w1) {w1};
+	\node [place] (c1)  [below=of w1] {c1};
+	\node [place] (s) [below= of c1,label=above:$s\le3$] {s};
+	\node [place] (c2) [below=of s] {c2};
+	\node [place] (w2) [below=of c2] {w2};
+	\node [transition] (e1) [left=of c1] {e1}
+		edge [pre, bend left] (w1)
+		edge [post, bend right] (s)
+		edge [post] (c1);
+	\node [transition] (e2) [right=of c1] {e2}
+		edge [post, bend right] node [swap] {2} (w1)
+		edge [pre, bend left] (s)
+		edge [pre] (c1);
+	\node [transition] (p1) [left=of c2] {p1}
+		edge [post, bend left] (s)
+		edge [post] (c2)
+		edge [pre, bend right] (w2);
+	\node [transition] (p2) [right=of c2] {p2}
+		edge [pre, bend right] (s)
+		edge [pre] (c2)
+		edge [post, bend left] node {2} (w2);
+   \startscope [on background layer]
+   	\node [fill=red!10, fit=(w1) (e1) (c1) (e2) (s) (p1) (p2) (c2) (w2)] {};
+   \stopscope
+   \startscope [xshift=6cm]
+	\node {
+		replacement of the \color[red]{capacity}
+	};
+	\node [place] (w1') {w1'};
+	\node [place] (c1')  [below=of w1'] {c1'};
+	\node [place] (s1') [below= of c1',label=above:$s\le3$] {s1'};
+	\node [place] (c2') [below=of s1'] {c2'};
+	\node [place] (w2') [below=of c2'] {w2'};
+	\node [transition] (e1') [left=of c1'] {e1'}
+		edge [pre, bend left] (w1')
+		edge [post, bend right] (s1')
+		edge [post] (c1');
+	\node [transition] (e2') [right=of c1'] {e2'}
+		edge [post, bend right] node [swap] {2} (w1')
+		edge [pre, bend left] (s1')
+		edge [pre] (c1');
+	\node [transition] (p1') [left=of c2'] {p1'}
+		edge [post, bend left] (s1')
+		edge [post] (c2')
+		edge [pre, bend right] (w2');
+	\node [transition] (p2') [right=of c2'] {p2'}
+		edge [pre, bend right] (s1')
+
+		edge [pre] (c2')
+		edge [post, bend left] node {2} (w2');
+   \stopscope
+   \startscope [on background layer]
+   \node [fill=green!10, fit=(w1') (w2') (e1') (e2')] {};
+   \stopscope
+\stoptikzpicture
+
+\stoptext

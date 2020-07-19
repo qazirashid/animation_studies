@@ -1,0 +1,44 @@
+newpath
+
+/Times-Roman findfont  % font name is pushed to stack as a literal,
+%findfont looks for font, and if found, pops the font name from the stack
+% and pushes a font dictionary scaled to 1-point.
+30 scalefont 
+% 30 is pushed to the stack.
+% Scale font expects a number and a font dictionary on the stack.
+% It pops the number and replaces font dictionary with a scaled one.
+setfont
+%setfont expects a font dictionary at the top of the stack.
+% it sets current font to this font and removes it from the stack.
+
+%Now defining a procedure.
+%square does not read/write/affect stack.
+% It simply draws a square at (0,0) in current user coordinates.
+% Note user coordinates can be transformed and current values are 
+% not known to the procedure.
+/square {  
+    newpath
+    0 0 moveto
+    90 0 lineto
+    90 90 lineto
+    0 90 lineto
+    closepath
+    fill
+    6 94 moveto
+    (Boxi) show
+} def
+
+% Procedure definition complete. 
+
+square 
+200 250 translate % translate the user coordinate system
+square
+gsave
+200 250 translate
+60 rotate
+.5 .5 scale
+square
+grestore
+-100 -100 translate
+square
+%showpage

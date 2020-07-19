@@ -1,0 +1,104 @@
+newpath
+%comparison operators::
+%  eq, ne, gt, lt, ge, le 
+%  These operators take two arguments on the stack of matching types
+%  They return a boolen resutls 'true' or 'false' on top of the stack. 
+%  The results can be used by other control flow instructions like 'if' 
+
+% the if operator takes a boolean value and an executable array (a procedure
+% or group of instruction). If the boolean value is true, the executable arrary
+% is evaluated. Otherwise nothing is done. 
+%
+% lets define a procedure that returns 'true' if the current point
+% had reached on or beyond the end of line horizontally.
+/chkforendofline {
+    currentpoint %pushes (x,y) coordinates of current point on the stack.
+    pop % pops the y coordinate. Throws it away. 
+    612 gt  % pushes 612 on stack and compares it with x-coordinate on stack.
+    % gt will pop both '612' and 'x-coordinate' off the stack and push
+    % 'true' if x>612 or false of x<=612.
+
+    % now that we have a boolean on top of stack, we can use it in a control
+    % flow operator 'if'.
+    % first push the executable array to be executed in case of 'true'.
+    {
+        0 -12 translate %translate user coordinates 12 points downards
+        0 0 moveto  % move to origin of new user coordinates
+    }
+} def
+
+%Let's define some variables
+/LM 72 def
+/RM 216 def
+/ypos 720 def
+/lineheight 14 def
+
+%Let's define some more procedures
+
+/newline {
+    ypos lineheight sub % find the next ypos by subtracting lineheight from
+    %current yposition.
+    /ypos exch def % save this by overwriting ypos new definition.
+    LM ypos moveto % move to the left margin on new ypos.
+} def
+
+/putstr {  %stack: str 
+    dup % duplicate the string. Stack has two copies of the string now
+    stringwidth % use the top copy of the str to calculate stringwidth.
+    % stringwidth pushes two numbers (x-strwidth,y-strheight) onto stack. 
+    pop % throws away (y-strhieght) off the stack
+    currentpoint % pushes current (x,y) on stack
+    pop % throws away (y) off from stack
+    % stack now contains (x-strwidth,x).
+    add % get the x-position (x + x-strwidth)
+    %when string is placed at current point
+    % stack now contains x-position where string will end.
+    RM % push right margin onto stack
+    gt % check if the string ending x-pos will be past the right margin.
+    {newline} % place a procedure call onto stack
+    if % if 'gt' caused a 'true' then call the function on top of stack. 
+    %If string is ending past the right margin, a newline procedure will
+    % bring the currentpoit (cursor) one line down and start at left margin.
+    show 
+    % note that after 'if' has been executed, the stack will contain 
+    % the string that was on top of stack prior to this procedure call.
+    % That string will now be placed on page by 'show'.
+    % Stack no longer contains that string. it has disappeared (consumed).
+} def % procedure definition is complete.
+
+%Main program that prints strings on the page
+%select font.
+/Times-Italic findfont 13 scalefont setfont
+LM ypos moveto  % move to top-left margin
+(If you tell the truth) % place a string on stack.
+putstr % call the procedure that will show it on the page.
+%repeat for next strings.
+(you) putstr (tell) putstr (the) putstr (truth) putstr
+(you) putstr (don't) putstr
+
+newline
+0 12 600 {ypos moveto (K) show} for
+% the 'for' operand expects 3 numbers and an excutable array (procedure)
+% on stack. 
+% It then builds a stack from starting number, incrementing it until it reaches
+% the final number. It then calls the procedure until all iterations are done
+
+newline
+/Times-Roman findfont 50 scalefont setfont
+/printZip {
+    0 0 moveto
+    (ZOOM) show
+} def
+320 400 translate
+.95 -.05 0 % set up stack for a 'for' loop
+{setgray printZip -1 0 translate} for 
+% set the grayscale using the loop counter.
+% Then call procedure to print the string. 
+% Translate user coordinates 1 point left and .5 point up. 
+% update the loop counter and repeat.
+0.9 setgray printZip
+
+0 0 moveto
+0 1 lineto
+stroke
+showpage

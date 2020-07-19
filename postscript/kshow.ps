@@ -1,0 +1,79 @@
+%kshow operator expects two operends on the stack.
+%The second operand is a string 'STR' (its on top of stack) .
+%The first operand is an executable array or procedure 'PROC' 
+%where PROC is placed just below STR on stack. 
+
+% kshow takes first two characters from the STR and places them
+% on the stack. It prints the first character and then calls PROC.
+% After PROC finishes, kshow prints the second character and then pushes
+% second and third character of STR on the stack 
+% and calls PROC again. Repeating this
+% until the last character of STR has been printed.
+
+% kshow was mainly designed for kerning in typography, but it can be 
+% used for other purposes.
+%
+% Here we use it to print some text patterns.
+
+%********************************
+%--------- Variables and procedure definitions ---------%
+
+/TM 780 def %top margin
+/BM -12 def %bottom margin
+/LM 0 def   %left margin
+/RM 612 def % right margin
+
+%New line procedure
+/newline {
+    currentpoint % push (xpos, ypos) on stack
+    13 sub  % subtract 13 from ypos. new ypos is on top of stack.
+    exch pop % change (xpos,ypos) to (ypos,xpos) and pop xpos.
+    LM % push line margin
+    exch % change (ypos,LM) to (LM,ypos).
+    moveto % moveto (LM,ypos)
+} def
+
+/nlIfNec { %start a new line if xpos is beyond right margin
+    currentpoint % push (xpos,ypos) on stack. 
+    pop % remove ypos from top of stack.
+    RM  % push RM onto stack.
+    gt % test=true if xpos > RM
+    {newline} if % if test=ture, call newline procedure
+} def
+/done? { %test if page has been filled and currentpoing ypos < BM
+    currentpoint % push (xpos,ypos) on stack. 
+    exch pop %reverse to (ypos,xpos) and pop xpos
+    BM lt % test=true if ypox < BM
+    % leave result at stack and finish.    
+} def
+
+/fillpage { %stack: STR 
+    %fill page with STR in light gray
+    /strg exch def  % redefine strg as exch everytime procedure executes
+    { %The stack contains STR.
+      %Place a procedure on stack.
+      {pop pop nlIfNec} 
+      % When this PROC will be executed, it will throw away 
+      % two characters that kshow will place on stack prior to executing the
+      % procedure.
+      % check if new line is necessary. If so ,change to new line.
+      strg % call strg. We basically use the string that was on top of stack
+      % as the STR arugment for kshow. 
+      % The exchange here is necessary, because stack contains (STR, PROC), 
+      % and kshow expects stack to contain (PROC,STR). The exch here will 
+      % ensure correct order.
+      % Now we are ready to call kshow
+      kshow
+      done? {exit} if % if done? (ypos < BM), exit
+    } loop
+} def
+
+% Ready to start the main program.
+/Times-Roman findfont 16 scalefont setfont
+LM TM moveto  % move to top left margin.
+.5 setgray    % change gray level to 60% white (40% black).
+( Dr. H ) % place the STR on stack.
+fillpage  % call fillpage.
+
+showpage
+

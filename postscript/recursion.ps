@@ -1,0 +1,40 @@
+%%
+/depth 0 def
+/maxdepth 10 def
+/down {/depth depth 1 add def} def
+% when 'down' is called. it redefines depth by incrementing its value by 1.
+/up {/depth depth 1 sub def} def
+
+/DoLine { %print a vertical line.
+    0 144 rlineto % from current (xpos,ypos) draw a vertical line
+    currentpoint  % after line segment has been drawn put new (xpos,ypos)
+    % on stack. 
+    stroke % stroke the path. This removes the path from stack.
+    translate % move user coordinates to new (xpos,ypos) as origin.
+    0 0 moveto % moveto origin of new user coordinates. 
+} def
+
+/FArrow{
+    gsave
+    .7 .7 scale % reduce scale by 70%
+    10 setlinewidth % set new linewidth. This will also be scaled.
+    down % increment value of 'depth'.
+    DoLine % call do line. Which draws a vertical line
+    % Note line in vertical in current user coordinates. 
+    % It will be drawn in physical cooridinates after applying the 
+    % transformation matrix. which means it may not be vertical in 
+    % on the physical page.
+    depth maxdepth le % check if max depth has not been reached.
+    {
+      50 rotate % for next depth rotate user coordinates by 135 degress.
+      FArrow % call self.
+      -100 rotate % now roate user coordinates again by 270.
+      FArrow % call self again.
+    } if
+    up grestore % if maxdepth has been reached. start going out of recursion.
+} def
+
+300 400 moveto
+FArrow
+stroke
+showpage

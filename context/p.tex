@@ -1,0 +1,33 @@
+
+\usemodule [tikz]
+\usetikzlibrary[arrows,decorations.pathmorphing, backgrounds, calc]
+\starttext
+This is the first line of text. 
+\startMPcode
+    fill fullcircle scaled 0.5cm withcolor .5blue; 
+\stopMPcode
+circle.
+\starttikzpicture  
+	\coordinate [label=left:{$A$}] (A) at (0,0);
+	\coordinate [label=right:{$B$}](B) at (1.25,0.75);
+	\draw (A) -- (B);
+    \node [circle, fill=green!20] at (0,0) {};
+    \draw [blue] let \p1 = ($ (B) - (A) $),
+                     \n2 = { veclen (\x1,\y1)}
+                 in 
+                    (A) circle (\n2)
+                    (B) circle (\n2) node [circle, fill=red!20] at (9cm,0) {};
+    \draw (0,-10cm) -- (10cm, -10cm);
+    \node [scale=10] at (0,0) {Hello};
+\startMPcode
+    path a, b,c, aa, bb;
+    a = fullcircle scaled 1cm;
+    b = a shifted (0,1cm);
+    c = a shifted (9cm,0);
+    fill a withcolor .9red;
+    fill b withcolor .8blue;
+    fill c withcolor .8green;
+    %draw (0,-10cm).. (10cm,-10cm);
+\stopMPcode
+\stoptikzpicture
+\stoptext

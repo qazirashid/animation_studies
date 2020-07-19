@@ -1,0 +1,61 @@
+context.starttext()
+context("Hello");
+local metafun=context.metafun;
+metafun.start();
+metafun("fill fullcircle scaled 5cm withcolor %s;", metafun.color("darkblue"));
+metafun("pickup pencircle scaled .1mm;")
+metafun("drawoptions(withcolor white);")
+
+for i=0,50,5 do
+    metafun("draw fullcircle scaled %smm;",i);
+    metafun("draw fullsquare scaled %smm;",i);
+end
+
+
+metafun.stop();
+
+local template=[[
+    path p, q; color c[];
+    c1 := \MPcolor{darkblue};
+    c2 := \MPcolor{darkred};
+    p := fullcircle scaled 2cm;
+    l := length p;
+    n := %s;
+    q := subpath (0,%s/n*l) of p;
+    draw q withcolor c2 withpen pencircle scaled 1mm;
+    draw boundingbox currentpicture withcolor c1;
+]]
+
+local function steps(n)
+    for i=0,n do
+        context.par();
+        context.metafun.start();
+            context.metafun(template,n,i);
+        context.metafun.stop();
+        if i<n then
+            context.par();
+        end
+    end
+end
+context.par();
+context.hbox(function() steps(10) end)
+
+local temp=[[
+    path p; p := fullcircle scaled 4cm;
+    draw p withpen penrazor scaled 2mm rotated 60 withcolor red;
+   
+    freedotlabel("%lefttop%", point 1 of p, origin);
+    freedotlabel("%righttop%", point 3 of p, origin);
+    freedotlabel("%leftbottom%", point 5 of p, origin);
+    freedotlabel("%rightbottom%", point 7 of p, origin);
+]]
+local variables={
+    lefttop="LeftTop", righttop="RighTop",
+    leftbottom="LBot", rightbottom="RBot",
+}
+context.par();
+context.metafun.start()
+    context.metafun(utilities.templates.replace(temp,variables));
+context.metafun.stop()
+
+context.stoptext()

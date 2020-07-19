@@ -1,0 +1,3 @@
+\startbuffer
+    context("see this!")
+\stopbuffer
